@@ -8,6 +8,10 @@ import errorHandler from "./src/middleware/globalErrorHandling.js";
 import cors from "cors";
 import { catchError } from "./src/middleware/catchError.js";
 import Stripe from "stripe";
+import { Order } from "./database/models/order.model.js";
+import { User } from "./database/models/user.model.js";
+import { Cart } from "./database/models/cart.model.js";
+import { Product } from "./database/models/product.model.js";
 const stripe = new Stripe(
   "sk_test_51PltAMJs7opwPS1443BNZCwPJgwtSJUf3eC63eyKV3sY1wHIwCXvd7uK5COGR0nYvz65hJpUndUIsODtD09f8A8D00YQAv6pXj"
 );
@@ -30,6 +34,34 @@ app.post(
     let checkout;
     if (event.type == "checkout.session.completed") {
       checkout = event.data.object;
+
+      //3-create order
+      let user = await User.findOne({ email: checkout.customer_email });
+      let cart = await Cart.findById(checkout.client_reference_id);
+      if (!cart) return next(new AppError("cart Not Found", 404));
+      let order = new Order({
+        user: user._id,
+        orderItems: cart.cartItems,
+        shippingAddress: checkout.metadata,
+        totalOrderPrice: checkout.amount_total / 100,
+        paymentType: "card",
+        isPaid: true,
+      });
+      await order.save();
+
+      let options = cart.cartItems.map((prod) => {
+        return {
+          updateOne: {
+            filter: { _id: prod.product },
+            update: {
+              $inc: { sold: prod.quantity, stock: -prod.quantity },
+            },
+          },
+        };
+      });
+      await Product.bulkWrite(options);
+      //5-clear user cart
+      await Cart.findByIdAndDelete(cart._id);
     }
 
     // Return a 200 res to acknowledge receipt of the event
