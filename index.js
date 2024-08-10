@@ -12,13 +12,11 @@ import { Order } from "./database/models/order.model.js";
 import { User } from "./database/models/user.model.js";
 import { Cart } from "./database/models/cart.model.js";
 import { Product } from "./database/models/product.model.js";
-const stripe = new Stripe(
-  "sk_test_51PltAMJs7opwPS1443BNZCwPJgwtSJUf3eC63eyKV3sY1wHIwCXvd7uK5COGR0nYvz65hJpUndUIsODtD09f8A8D00YQAv6pXj"
-);
+const stripe = new Stripe(process.env.STRIPE_TEST_KEY);
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(cors());
-
+console.log(process.env);
 //Before the express.json body parser
 app.post(
   "/api/webhook",
