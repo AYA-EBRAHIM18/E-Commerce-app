@@ -34,11 +34,13 @@ const getProduct = catchError(async (req, res, next) => {
 });
 const updateProduct = catchError(async (req, res, next) => {
   req.body.slug = slugify(req.body.title);
-  req.body.imgCover = req.files.imgCover[0].filename;
-  req.body.images = req.files.images.map((img) => img.filename);
+  if (req.file) req.body.imgCover = req.files.imgCover[0].filename;
+  if (req.body.images)
+    req.body.images = req.files.images.map((img) => img.filename);
   let product = await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
   });
+
   product || next(new AppError("product Not Found.", 404));
   !product || res.json({ message: "success", product });
 });

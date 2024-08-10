@@ -1,4 +1,3 @@
-import slugify from "slugify";
 import { AppError } from "../../utilities/appError.js";
 import { catchError } from "../../middleware/catchError.js";
 import { deleteOne, updateOne } from "../handlers/handlers.js";

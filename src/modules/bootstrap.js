@@ -7,6 +7,9 @@ import authRouter from "./auth/auth.routes.js";
 import reviewRouter from "./review/review.routes.js";
 import wishlistRouter from "./wishlist/wishlist.routes.js";
 import addressRouter from "./address/address.routes.js";
+import couponRouter from "./coupon/coupon.routes.js";
+import cartRouter from "./cart/cart.routes.js";
+import orderRouter from "./order/order.routes.js";
 
 export const bootstrap = (app) => {
   app.use("/api/categories", categoryRouter);
@@ -18,4 +21,7 @@ export const bootstrap = (app) => {
   app.use("/api/reviews", reviewRouter);
   app.use("/api/wishlist", wishlistRouter);
   app.use("/api/addresses", addressRouter);
+  app.use("/api/Coupons", couponRouter);
+  app.use("/api/cart", cartRouter);
+  app.use("/api/orders", orderRouter);
 };

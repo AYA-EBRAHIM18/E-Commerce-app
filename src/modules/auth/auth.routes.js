@@ -12,9 +12,5 @@ const authRouter = Router();
 authRouter.post("/signUp", checkEmail, signUp);
 authRouter.post("/signIn", signIn);
 authRouter.patch("/changePass", changePassword);
-// authRouter
-//   .route("/:id")
-//   .get(getUser)
-//   .put(checkEmail, updateUser)
-//   .delete(deleteUser);
+
 export default authRouter;

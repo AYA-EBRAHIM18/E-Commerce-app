@@ -1,7 +1,7 @@
 import { connect } from "mongoose";
 
 export const dbConnection = connect(
-  "mongodb://127.0.0.1:27017/E-commerce"
+  "mongodb+srv://e-commerce:dZp6JWPxkQqajxjZ@cluster0.3hdqd.mongodb.net/E-commerce"
 ).then(() => {
   console.log("Database is connected successfully.");
 });
