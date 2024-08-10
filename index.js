@@ -25,7 +25,7 @@ app.post(
     let event = stripe.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.WEBHOOK - SIGNING - SECRET
+      process.env.WEBHOOK_SIGNING_SECRET
     );
     let checkout;
     if (event.type == "checkout.session.completed") {
