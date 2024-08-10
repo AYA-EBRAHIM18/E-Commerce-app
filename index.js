@@ -35,33 +35,33 @@ app.post(
     if (event.type == "checkout.session.completed") {
       checkout = event.data.object;
 
-      // //3-create order
-      // let user = await User.findOne({ email: checkout.customer_email });
-      // let cart = await Cart.findById(checkout.client_reference_id);
-      // if (!cart) return next(new AppError("cart Not Found", 404));
-      // let order = new Order({
-      //   user: user._id,
-      //   orderItems: cart.cartItems,
-      //   shippingAddress: checkout.metadata,
-      //   totalOrderPrice: checkout.amount_total / 100,
-      //   paymentType: "card",
-      //   isPaid: true,
-      // });
-      // await order.save();
+      //3-create order
+      let user = await User.findOne({ email: checkout.customer_email });
+      let cart = await Cart.findById(checkout.client_reference_id);
+      if (!cart) return next(new AppError("cart Not Found", 404));
+      let order = new Order({
+        user: user._id,
+        orderItems: cart.cartItems,
+        shippingAddress: checkout.metadata,
+        totalOrderPrice: checkout.amount_total / 100,
+        paymentType: "card",
+        isPaid: true,
+      });
+      await order.save();
 
-      // let options = cart.cartItems.map((prod) => {
-      //   return {
-      //     updateOne: {
-      //       filter: { _id: prod.product },
-      //       update: {
-      //         $inc: { sold: prod.quantity, stock: -prod.quantity },
-      //       },
-      //     },
-      //   };
-      // });
-      // await Product.bulkWrite(options);
-      // //5-clear user cart
-      // await Cart.findByIdAndDelete(cart._id);
+      let options = cart.cartItems.map((prod) => {
+        return {
+          updateOne: {
+            filter: { _id: prod.product },
+            update: {
+              $inc: { sold: prod.quantity, stock: -prod.quantity },
+            },
+          },
+        };
+      });
+      await Product.bulkWrite(options);
+      //5-clear user cart
+      await Cart.findByIdAndDelete(cart._id);
     }
     res.json({ message: "success", checkout });
   })
